@@ -1,39 +1,75 @@
-# 🏡 Mendrix.io — AI-Powered Property Optimization SaaS
+# Mendrix Rentals SaaS
 
-**Mendrix** helps property owners and managers grow smarter.  
-Upload your listings, connect **Airbnb** and **Booking.com** accounts, and receive **AI-driven optimization insights** and **qualified leads** — all from one clean dashboard.
+This project delivers a lightweight Software-as-a-Service experience for vacation rental managers.
+Owners can upload property listings, connect their Airbnb/Booking.com channels, and receive
+AI-guided optimization suggestions and partnership leads in one dashboard.
 
----
+The repository contains a FastAPI backend with a SQLite datastore and a Vite + React frontend.
 
-## 🚀 Core Features
+## Features
 
-- 🏘️ **Property Management:** Upload and manage multiple listings in seconds.  
-- 🔗 **Channel Connections:** Securely connect Airbnb, Booking.com, and other marketplaces.  
-- 🤖 **AI Optimization:** Smart pricing, title/description improvements, and occupancy insights.  
-- 💼 **Lead Generation:** Access verified prospects and partnership opportunities.  
-- 📊 **Performance Dashboard:** Real-time analytics and growth tracking for every property.  
+- **Property onboarding** – capture listing basics, nightly rate, and occupancy.
+- **Channel connectivity** – log Airbnb/Booking.com credentials per listing.
+- **AI-style insights** – deterministic heuristics surface pricing tweaks and content upgrades.
+- **Lead generation** – curated outreach ideas for corporate housing and influencer partners.
 
----
+## Project structure
 
-## 🧠 Tech Stack
+```
+backend/   # FastAPI application (SQLite + SQLAlchemy)
+frontend/  # Vite + React single-page app (React Query + Axios)
+```
 
-| Layer | Technology |
-|--------|-------------|
-| Frontend | **Next.js 14**, **TypeScript**, **Tailwind CSS**, **shadcn/ui** |
-| Backend | **Prisma + PostgreSQL**, **NextAuth** (Email/Google) |
-| AI Engine | **OpenAI API (GPT-4/5)** for optimization and insights |
-| Integrations | **Airbnb / Booking.com APIs**, **Stripe**, **S3 Storage** |
-| Deployment | **Docker**, **Vercel**, **Render / Neon DB** |
-| CI/CD | **GitHub Actions**, **Playwright / Vitest** tests |
+## Getting started
 
----
-
-## ⚙️ Quick Start (Local Dev)
+### Backend
 
 ```bash
-git clone https://github.com/DigitalNomadKamran/mendrix.git
-cd mendrix
+cd backend
+python -m venv .venv
+source .venv/bin/activate  # On Windows use `.venv\\Scripts\\activate`
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+The API runs on `http://localhost:8000`. A SQLite database file (`mendrix.db`) will be created
+automatically.
+
+### Frontend
+
+```bash
+cd frontend
 npm install
-cp .env.example .env
-docker-compose up -d
 npm run dev
+```
+
+The Vite dev server starts on `http://localhost:5173`. If your backend is on another origin,
+set `VITE_API_URL` in a `.env` file (e.g. `VITE_API_URL=http://localhost:8000`).
+
+## Example workflow
+
+1. Add a property from the left-hand panel.
+2. Select the property to view its accounts and insights.
+3. Connect Airbnb/Booking.com accounts for the active property.
+4. Open the insights card to generate optimization suggestions and partnership leads.
+
+## API quick reference
+
+| Endpoint | Description |
+| --- | --- |
+| `POST /properties/` | Create a new property listing |
+| `GET /properties/` | List all properties |
+| `POST /accounts/` | Attach an Airbnb/Booking account to a property |
+| `GET /accounts/?property_id=` | Fetch accounts (optionally filtered by property) |
+| `GET /insights/{id}/suggestions` | Generate or return cached optimization suggestions |
+| `GET /insights/{id}/leads` | Generate or return cached lead recommendations |
+
+## Testing the API
+
+Interact directly with the backend using FastAPI's Swagger UI at `http://localhost:8000/docs`.
+
+## Deployment notes
+
+- Swap SQLite for PostgreSQL/MySQL by updating `SQLALCHEMY_DATABASE_URL` in `backend/app/database.py`.
+- Harden account storage or integrate OAuth flows before connecting to live OTA APIs.
+- Replace the heuristic `services.generate_suggestions` with an AI provider (OpenAI, etc.).
